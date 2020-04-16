@@ -1,1 +1,6 @@
-/home/viking/.bash_profile
+#
+# ~/.bash_profile
+#
+
+[[ -f ~/.profile ]] && . ~/.profile
+[[ -f ~/.bashrc ]] && . ~/.bashrc

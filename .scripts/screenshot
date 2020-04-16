@@ -1,0 +1,5 @@
+#!/bin/sh
+
+NAME=~/Screenshots/screenshot-$(date +%F_%T).png
+maim -s $NAME
+notify-send 'Screnshot taken' -i $NAME

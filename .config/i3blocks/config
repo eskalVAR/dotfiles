@@ -1,0 +1,32 @@
+command=~/.scripts/$BLOCK_NAME
+separator_block_width=15
+markup=pango
+
+[spotify_alt]
+command=~/.scripts/spotify_alt -c ~/.config/i3blocks/spotify_alt_config.json
+interval=persist
+
+[get_market]
+interval=60
+label=📈 
+
+[cpu]
+interval=5
+label=💻 
+
+[battery]
+interval=15
+command=~/.scripts/battery BAT0
+
+[battery]
+interval=15
+command=~/.scripts/battery BAT1
+
+[volume]
+interval=30
+
+[date]
+label=📅 
+command=date
+interval=5
+

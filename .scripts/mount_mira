@@ -1,0 +1,3 @@
+#!/bin/sh
+mkdir ~/University >> /dev/null
+sshfs mira: ~/University

@@ -1,0 +1,78 @@
+#!/bin/bash
+
+if [ "$(stat -c %y ~/.cache/market_data 2> /dev/null | cut -d' ' -f1)" != "$(date '+%Y-%m-%d')" ]; then
+# Args parameters
+url="https://www.tradinghours.com/internal/status"
+csrf_token=""
+csrf_token=$(curl -s -c ~/.cache/market_cookies -X GET https://www.tradinghours.com/tools/dashboard | grep 'csrf-token' | awk -v FS="(content=|>)" '{print "\"X-CSRF-TOKEN:"  $2 "\""; exit }')
+curl_header1='"Content-Type: application/x-www-form-urlencoded; charset=UTF-8"'
+curl_header2='"Origin: https://www.tradinghours.com"'
+curl_header3='"exchange=nyse%2Clse"'
+
+# Args array
+args=("-s" "-b" "~/.cache/market_cookies" "-X" "POST" -H "${csrf_token}" -H "${curl_header1}" -H "${curl_header2}" -d "${curl_header3}" "${url}" )
+
+# CURL command to executre
+COMMAND="$(echo "curl" "${args[@]}")"
+# Command execution with eval to fix weird arg issue
+eval ${COMMAND} > ~/.cache/market_data
+
+fi
+
+OUTPUT="$(cat ~/.cache/market_data)"
+
+# Data parsing
+NYSE_STATUS="$(echo ${OUTPUT} | jq '.data.nyse.status')"
+LSE_STATUS="$(echo ${OUTPUT} | jq '.data.lse.status')"
+
+NYSE_STATUS=$(echo ${NYSE_STATUS} | awk -F\" '{ print $2 }')
+LSE_STATUS=$(echo ${LSE_STATUS} | awk -F\" '{ print $2 }')
+
+NYSE_TIME="$(echo ${OUTPUT} | jq '.data.nyse.nextBell' | awk -F\" '{print $2}')"
+LSE_TIME="$(echo ${OUTPUT} | jq '.data.lse.nextBell' | awk -F\" '{print $2}')"
+
+NYSE_LOCAL_BELL=$(date --date "${NYSE_TIME}" "+%s")
+LSE_LOCAL_BELL=$(date --date "${LSE_TIME}" "+%s")
+
+NYSE_OFFSET=$(expr ${NYSE_LOCAL_BELL} - $(date +%s))
+LSE_OFFSET=$(expr ${LSE_LOCAL_BELL} - $(date +%s))
+
+seconds=$NYSE_OFFSET
+hours=$(($seconds / 3600))
+seconds=$(($seconds % 3600))
+minutes=$(($seconds / 60))
+minutes=$(printf "%02d" $minutes)
+NYSE_OUTPUT=$(echo "[NYSE] ●" ${NYSE_STATUS^} "${hours}:${minutes}")
+
+seconds=$LSE_OFFSET
+hours=$(($seconds / 3600))
+seconds=$(($seconds % 3600))
+minutes=$(($seconds / 60))
+minutes=$(printf "%02d" $minutes)
+LSE_OUTPUT=$(echo "[LSE] ●" ${LSE_STATUS^} "${hours}:${minutes}")
+
+# Output
+if [ "$NYSE_STATUS" == "closed" ]; then
+	NYSE_color="#FF0000"
+elif [ "$NYSE_STATUS" == "open" ]; then
+	NYSE_color="#00FF00"
+else
+	NYSE_color="#FFBF00"
+fi
+
+if [ "$LSE_STATUS" == "closed" ]; then
+	LSE_color="#FF0000"
+elif [ "$LSE_STATUS" == "open" ]; then
+	LSE_color="#00FF00"
+else
+	LSE_color="#FFBF00"
+fi
+
+printf "<span color='%s'>%s</span> " "$NYSE_color" "$NYSE_OUTPUT"
+
+printf "<span color='%s'>%s</span>\n" "$LSE_color" "$LSE_OUTPUT"
+
+
+
+
+

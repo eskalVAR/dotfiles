@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# This script increases the /tmp partition. 
+# Useful for when installing large packages with trizen.
+sudo mount -o remount,size=10G,noatime /tmp 
+
+
+
