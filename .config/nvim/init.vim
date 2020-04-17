@@ -52,7 +52,9 @@ Plug 'cakebaker/scss-syntax.vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'preservim/nerdtree'
 "Plug 'vim-airline/vim-airline'
-Plug 'dylanaraps/wal.vim'
+"Plug 'dylanaraps/wal.vim'
+Plug 'sprockmonty/wal.vim'
+Plug 'crusoexia/vim-monokai'
 call plug#end()
 
 " Directories
@@ -61,12 +63,13 @@ set directory=~/.local/share/nvim/swap
 set undodir=~/.local/share/nvim/undo
 
 " Colours, syntax etc.
+set autoindent
 filetype plugin indent on
 syntax enable
-set t_Co=256
+set termguicolors
 set encoding=utf-8
 colo wal
-
+let g:vim_vue_plugin_load_full_syntax = 1
 " Airline.
 let g:airline_theme='minimalist'
 let g:airline_powerline_fonts = 1
