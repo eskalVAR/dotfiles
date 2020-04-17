@@ -68,8 +68,14 @@ filetype plugin indent on
 syntax enable
 set termguicolors
 set encoding=utf-8
-colo wal
 let g:vim_vue_plugin_load_full_syntax = 1
+colo monokai
+hi normal ctermbg=NONE guibg=NONE               
+" TABS EVERYONE'S FAV
+set tabstop=8
+set softtabstop=4
+set shiftwidth=4
+set expandtab
 " Airline.
 let g:airline_theme='minimalist'
 let g:airline_powerline_fonts = 1
