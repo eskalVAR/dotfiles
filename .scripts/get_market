@@ -1,22 +1,23 @@
 #!/bin/bash
+function update_market_data () {
+	# Args parameters
+	url="https://www.tradinghours.com/internal/status"
+	csrf_token=""
+	csrf_token=$(curl -s -c ~/.cache/market_cookies -X GET https://www.tradinghours.com/tools/dashboard | grep 'csrf-token' | awk -v FS="(content=|>)" '{print "\"X-CSRF-TOKEN:"  $2 "\""; exit }')
+	curl_header1='"Content-Type: application/x-www-form-urlencoded; charset=UTF-8"'
+	curl_header2='"Origin: https://www.tradinghours.com"'
+	curl_header3='"exchange=nyse%2Clse"'
 
+	# Args array
+	args=("-s" "-b" "~/.cache/market_cookies" "-X" "POST" -H "${csrf_token}" -H "${curl_header1}" -H "${curl_header2}" -d "${curl_header3}" "${url}" )
+
+	# CURL command to executre
+	COMMAND="$(echo "curl" "${args[@]}")"
+	# Command execution with eval to fix weird arg issue
+	eval ${COMMAND} > ~/.cache/market_data
+}
 if [ "$(stat -c %y ~/.cache/market_data 2> /dev/null | cut -d' ' -f1)" != "$(date '+%Y-%m-%d')" ]; then
-# Args parameters
-url="https://www.tradinghours.com/internal/status"
-csrf_token=""
-csrf_token=$(curl -s -c ~/.cache/market_cookies -X GET https://www.tradinghours.com/tools/dashboard | grep 'csrf-token' | awk -v FS="(content=|>)" '{print "\"X-CSRF-TOKEN:"  $2 "\""; exit }')
-curl_header1='"Content-Type: application/x-www-form-urlencoded; charset=UTF-8"'
-curl_header2='"Origin: https://www.tradinghours.com"'
-curl_header3='"exchange=nyse%2Clse"'
-
-# Args array
-args=("-s" "-b" "~/.cache/market_cookies" "-X" "POST" -H "${csrf_token}" -H "${curl_header1}" -H "${curl_header2}" -d "${curl_header3}" "${url}" )
-
-# CURL command to executre
-COMMAND="$(echo "curl" "${args[@]}")"
-# Command execution with eval to fix weird arg issue
-eval ${COMMAND} > ~/.cache/market_data
-
+	update_market_data
 fi
 
 OUTPUT="$(cat ~/.cache/market_data)"
@@ -36,7 +37,11 @@ LSE_LOCAL_BELL=$(date --date "${LSE_TIME}" "+%s")
 
 NYSE_OFFSET=$(expr ${NYSE_LOCAL_BELL} - $(date +%s))
 LSE_OFFSET=$(expr ${LSE_LOCAL_BELL} - $(date +%s))
-
+if [ $NYSE_OFFSET -lt 0 ]; then
+	update_market_data
+elif [ $LSE_OFFSET -lt 0 ]; then
+	update_market_data
+fi
 seconds=$NYSE_OFFSET
 hours=$(($seconds / 3600))
 seconds=$(($seconds % 3600))
