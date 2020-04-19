@@ -1,6 +1,5 @@
-#
-# ~/.Xresources
-#
-
-st.font: Monospace-12
+!
+! ~/.Xresources
+! 
+st.font: Monospace-10
 st.alpha: 0.8
