@@ -30,6 +30,7 @@ set incsearch
 " Spell check
 let $LANG='en'
 let mapleader = ","
+let maplocalleader= ","
 map <leader>ss :setlocal spell!<cr>
 " CLIPBOARD
 " Copy to clipboard
@@ -55,6 +56,7 @@ Plug 'preservim/nerdtree'
 "Plug 'dylanaraps/wal.vim'
 Plug 'sprockmonty/wal.vim'
 Plug 'crusoexia/vim-monokai'
+Plug 'jceb/vim-orgmode'
 call plug#end()
 
 " Directories
@@ -90,3 +92,5 @@ let g:airline#extensions#hunks#non_zero_only = 1
 " let g:NERDTreeDirArrowExpandable = ''
 " let g:NERDTreeDirArrowCollapsible = ''
 
+" ORGMOD
+set foldlevelstart=99

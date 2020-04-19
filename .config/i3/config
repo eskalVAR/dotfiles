@@ -102,7 +102,7 @@ set $ws10 "10"
 # set $ws10 "ι"
 # Kill focused window
 bindsym $mod+Shift+q kill
-# Toggle tiling / floating
+# Toggle tiling / floating (also used to move window out of scratchpad
 bindsym $mod+Shift+space floating toggle
 # Change focus between tiling / floating windows
 bindsym $mod+space focus mode_toggle
@@ -141,7 +141,12 @@ bindsym $mod+f fullscreen toggle
 #bindsym $mod+s layout stacking
 #bindsym $mod+w layout tabbed
 #bindsym $mod+e layout toggle split
-
+# Scratchpad, I do like the scratchpad though
+for_window [title="^scratchpad"] move scratchpad
+# Make the currently focued window a scratchpad
+bindsym $mod+Shift+minus move scratchpad
+# Cycle through scratchpad windows
+bindsym $mod+minus scratchpad show
 # Switch to workspace
 bindsym $mod+1 workspace $ws1
 bindsym $mod+2 workspace $ws2
@@ -205,6 +210,7 @@ bindsym $mod+r mode "resize"
 # ===========================
 # Screenshot (custom script)
 bindsym --release $mod+w exec "screenshot"
+bindsym --release Print exec "screenshot_whole"
 # Start a terminal
 bindsym $mod+Return exec i3-sensible-terminal
 # Lock screen
@@ -217,5 +223,7 @@ bindsym XF86MonBrightnessUp exec --no-startup-id xbacklight -inc 15
 # Lowest backlight on T450s for night work
 bindsym XF86Display exec --no-startup-id xbacklight -set 0.059
 # File manager
-bindsym $mod+n exec st nnn
+bindsym $mod+n exec "st bash -c 'lf; bash'"
 bindsym $mod+Shift+n exec nautilus
+# Work 
+bindsym --release $mod+e exec --no-startup-id work
