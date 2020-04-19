@@ -5,13 +5,15 @@ echo $workspace
 case $workspace in
     "University")
         mount_mira
-        i3-msg "exec --no-startup-id `st -T "scratchpad" bash -c 'nvim -o ~/University/Documents/*.org; bash'` -name __scratchpad" &
+        i3-msg "exec --no-startup-id `st -T "scratchpad" bash -c 'nvim -o ~/University/Documents/*.org; bash'` -name __scratchpad" & 
+        notify-send "$workspace Workspace setup"
         ;;
     "Current Directory")
-        i3-msg "exec --no-startup-id `st -T "scratchpad" bash -c 'nvim -o $PWD/*.org; bash'` -name __scratchpad" &
+        i3-msg "exec --no-startup-id `st -T "scratchpad" bash -c 'nvim -o $PWD/*.org; bash'` -name __scratchpad" & 
+        notify-send "$workspace Workspace setup"
         ;;
     "General")
-        i3-msg "exec --no-startup-id `st -T "scratchpad" bash -c 'nvim -o ~/Documents/*.org; bash'` -name __scratchpad" &
+        i3-msg "exec --no-startup-id `st -T "scratchpad" bash -c 'nvim -o ~/Documents/*.org; bash'` -name __scratchpad" & 
+        notify-send "$workspace Workspace setup"
         ;;
 esac
-notify-send "Workspace setup"
