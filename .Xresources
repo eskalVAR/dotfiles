@@ -2,4 +2,4 @@
 ! ~/.Xresources
 ! 
 st.font: Monospace-10
-st.alpha: 0.0
+st.alpha: 0.8
