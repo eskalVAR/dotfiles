@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 workspaces=("University" "Current Directory" "General")
 workspace=$(printf "%s\n" "${workspaces[@]}" | dmenu -i -p "Workspace type")
 case $workspace in
@@ -8,6 +8,12 @@ case $workspace in
         ;;
     "Current Directory")
         dir=$PWD
+        # Check for .org existence
+        count=`ls -1 *.org 2>/dev/null | wc -l`
+        if [ $count != 0 ]; then 
+            # If no .org files in current directory, create one
+            touch "todo.org"
+        fi
         ;;
     "General")
         dir="~/Documents"
@@ -15,3 +21,4 @@ case $workspace in
 esac
 exec st -T 'scratchpad' bash -c "nvim -o $dir/*.org; bash" 2> /dev/null  & 
 notify-send "$workspace Workspace setup"
+

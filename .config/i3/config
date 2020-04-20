@@ -9,8 +9,8 @@
 # Aesthetics
 # ===============================================================
 font pango:monospace 10
-for_window [class="^.*"] border pixel 1
-gaps inner 0
+for_window [class="^.*"] border pixel 2
+gaps inner 5
 gaps outer 0
 # wal
 exec_always "wal -i /home/viking/.config/wallpaper"
@@ -51,8 +51,8 @@ set_from_resource $bg i3wm.background #f0f0f0
 # ===========================
 bar {
 	colors {
-		background #000000
-		statusline #ffffff
+		background $bg
+		statusline $fg
 		separator #666666
 
 		focused_workspace    $fg $c2 $fg
