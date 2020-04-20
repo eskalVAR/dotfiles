@@ -1,5 +1,5 @@
 #!/bin/sh
-workspaces=("University" "Current Directory" "General")
+workspaces=("General" "University" "Current Directory" )
 workspace=$(printf "%s\n" "${workspaces[@]}" | dmenu -i -p "Workspace type")
 case $workspace in
     "University")
