@@ -1,19 +1,17 @@
 #!/bin/bash
 workspaces=("University" "Current Directory" "General")
 workspace=$(printf "%s\n" "${workspaces[@]}" | dmenu -i -p "Workspace type")
-echo $workspace
 case $workspace in
     "University")
         mount_mira
-        i3-msg "exec --no-startup-id `st -T "scratchpad" bash -c 'nvim -o ~/University/Documents/*.org; bash'` -name __scratchpad" & 
-        notify-send "$workspace Workspace setup"
+        dir="~/University/Documents"
         ;;
     "Current Directory")
-        i3-msg "exec --no-startup-id `st -T "scratchpad" bash -c 'nvim -o $PWD/*.org; bash'` -name __scratchpad" & 
-        notify-send "$workspace Workspace setup"
+        dir=$PWD
         ;;
     "General")
-        i3-msg "exec --no-startup-id `st -T "scratchpad" bash -c 'nvim -o ~/Documents/*.org; bash'` -name __scratchpad" & 
-        notify-send "$workspace Workspace setup"
+        dir="~/Documents"
         ;;
 esac
+exec st -T 'scratchpad' bash -c "nvim -o $dir/*.org; bash" 2> /dev/null  & 
+notify-send "$workspace Workspace setup"
