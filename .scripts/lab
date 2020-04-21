@@ -1,0 +1,20 @@
+#!/bin/bash
+
+usedws=$(i3-msg -t get_workspaces | jq -r '.[] | .num')
+
+for ws in {1..10}
+do
+    if [[ ! "${usedws[@]}" =~ "${ws}" ]]; then
+        # Found free WM
+        if [ $(ls -1 *.tex 2>/dev/null | wc -l) == 0 ]; then 
+            notify-send "Work LaTeX" "No tex files found"
+            break
+        else
+            i3-msg "workspace ${ws}; append_layout ~/.config/work/lab.json" >> /dev/null &
+            exec st bash -c "nvim -o $PWD/*.tex; bash" 2> /dev/null  & 
+            exec zathura $PWD/output.pdf 2> /dev/null &
+            notify-send "Work LaTeX" "LaTeX Workspace setup on ${ws}"
+            break
+        fi
+    fi
+done

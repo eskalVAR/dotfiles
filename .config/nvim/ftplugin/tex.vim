@@ -1,4 +1,3 @@
-syntax on 
 set number
 set spell
 set spelllang=en_gb

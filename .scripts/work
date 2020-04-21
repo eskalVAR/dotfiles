@@ -1,16 +1,35 @@
 #!/bin/sh
-workspaces=("General" "University" "Current Directory" )
+workspaces=("Recent" "General" "University" "Current Directory" )
 workspace=$(printf "%s\n" "${workspaces[@]}" | dmenu -i -p "Workspace type")
+if [ "$workspace" == "Recent" ]; then
+    workspace=$(head /tmp/recent_work -n1)
+    dir=$(tail /tmp/recent_work -n1)
+    if [[ -z $dir || -z $workspace ]]; then
+        workspace=""
+        notify-send "🗄️ Work" "No Recent Workspace"
+    fi
+fi
 case $workspace in
+    "Recent")
+
+        ;;
     "University")
+        # Setup i3-layout
+        i3_workspace=$(i3-msg -t get_workspaces | jq -r '.[] | select(.focused==true).name')
+        i3-msg "workspace ${i3_workspace}; append_layout ~/.config/work/university_i3_layout.json"
+        # Start programs
+        #exec firefox --new-window "https://duo.dur.ac.uk" & disown firefox
+        exec firefox --new-window "https://link.springer.com/journal/11453/volumes-and-issues" & disown firefox
+        st -T 'unist' bash -c 'cd ~/University;bash' & disown st
+        zathura & disown zathura
+        # Mount university drive
         mount_mira
         dir="~/University/Documents"
         ;;
     "Current Directory")
         dir=$PWD
         # Check for .org existence
-        count=`ls -1 *.org 2>/dev/null | wc -l`
-        if [ $count != 0 ]; then 
+        if [ $(ls -1 *.org 2>/dev/null | wc -l) == 0 ]; then 
             # If no .org files in current directory, create one
             touch "todo.org"
         fi
@@ -19,6 +38,12 @@ case $workspace in
         dir="~/Documents"
         ;;
 esac
-exec st -T 'scratchpad' bash -c "nvim -o $dir/*.org; bash" 2> /dev/null  & 
-notify-send "$workspace Workspace setup"
+if [ ! -z "$workspace" ]; then
+    # Save to recents
+    echo $workspace > /tmp/recent_work
+    echo $dir >> /tmp/recent_work
+    # Launch and setup scratchpad with org-mode
+    exec st -T 'scratchpad' bash -c "nvim -o $dir/*.org; bash" 2> /dev/null  & 
+    notify-send "🗄️ Work" "$workspace Workspace setup"
+fi
 
