@@ -61,7 +61,7 @@ bar {
 		urgent_workspace     $fg $c5 $fg
 		binding_mode         $fg $cg $fg
 	}
-	font pango:Mono 10
+	font pango: IBM Plex Mono 10
 	status_command i3blocks
 	position top
 	mode dock
